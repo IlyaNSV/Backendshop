@@ -63,3 +63,13 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True)
     gender = models.CharField(verbose_name='пол', max_length=15,
                               choices=GENDER_CHOICES, default=MALE)
+
+
+class Banner(models.Model):
+    name = models.CharField('имя баннера', max_length=128)
+    image = models.ImageField(upload_to='banners_images', blank=True)
+    desc = models.TextField('описание баннера', blank=True)
+    info = models.TextField('служебное описание баннера', blank=True
+    created = models.DateField(verbose_name='Создан', auto_now_add=True)
+    updated = models.DateField(verbose_name='Обновлён', auto_now=True)
+    is_active = models.BooleanField(default=False)
