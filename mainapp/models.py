@@ -10,7 +10,7 @@ class ProductCategory(models.Model):
     def count_prods(self):
         number = 0
         for sub in self.subs.all():
-            number += sub.products.count()
+            number += sub.sc_products.count()
         return number
 
 
@@ -23,16 +23,20 @@ class ProductSubCategory(models.Model):
     image = models.ImageField(verbose_name='фото категории', upload_to='category_images', blank=True)
 
     def count_prods(self):
-        return self.products.count()
-
-    def get_subs(pk):
-        return ProductSubCategory.objects.filter(category=pk).filter(is_active=True)
+        return self.sc_products.count()
 
 
 class ProductBrand(models.Model):
     name = models.CharField(verbose_name='название', max_length=64, unique=True)
     is_active = models.BooleanField(default=True)
     image = models.ImageField(verbose_name='логотип', upload_to='brands_logo', blank=True)
+
+    @property
+    def brand_products_count(self, cpk=None, scpk=None): #cpk = category_pk, scpk = subcategory_pk
+        if scpk:
+            return ProductCategory.objects.filter(pk=cpk).subs.filter(pk=scpk).sc_products.filter(brand=self.pk).count()
+        else:
+            return Product.objects.all().filter(brand=self.pk).count()
 
 
 class Product(models.Model):
@@ -45,9 +49,9 @@ class Product(models.Model):
     )
 
     subcategory = models.ForeignKey(ProductSubCategory, verbose_name='подкатегория продукта', on_delete=models.CASCADE,
-                                    related_name='products')
+                                    related_name='sc_products')
     brand = models.ForeignKey(ProductBrand, verbose_name='бренд продукта', on_delete=models.CASCADE,
-                              related_name='products')
+                              related_name='b_products')
     name = models.CharField('имя продукта', max_length=128)
     image = models.ImageField(upload_to='products_images', blank=True)
     short_desc = models.CharField('краткое описание', max_length=64, blank=True)
