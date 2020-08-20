@@ -1,7 +1,11 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.views.generic import TemplateView
 
 from mainapp.models import Product, ProductCategory, ProductSubCategory, ProductBrand
@@ -15,25 +19,47 @@ class ContactView(TemplateView):
     template_name = 'mainapp/contact.html'
 
 
-def category_products(request, cpk, scpk, page=1, l_price=None):
+def category_products(request, **kwargs):
+    print(kwargs)
+    if 'page' not in kwargs:
+        kwargs['page'] = 1
+
+    if not request.is_ajax():
+        request.session['min_price'] = 0
+        request.session['max_price'] = 999999
+
+    if request.is_ajax():
+        print('AJAX')
+        if 'l_price' in kwargs:
+            request.session['min_price'] = kwargs['l_price']
+        else:
+            request.session['max_price'] = kwargs['u_price']
+
+    min_price = request.session['min_price']
+    max_price = request.session['max_price']
+
     category_list = ProductCategory.objects.all()
     brands_list = ProductBrand.objects.all()
-    on_page = 1
+
+    on_page = 4
     range = [1, 2, 3]
-    if cpk == '0':
+
+    if kwargs['cpk'] == '0':
         category = {'pk': 0, 'name': 'All categories'}
         subcategory = {'pk': 0, 'name': 'All subcategories'}
-        products = Product.objects.filter(is_active=True)
-
+        products = Product.objects.filter(Q(is_active=True), Q(price__lte=max_price) & Q(price__gte=min_price))
+        print(products)
 
     else:
-        category = get_object_or_404(ProductCategory, pk=cpk)
-        subcategory = get_object_or_404(ProductSubCategory, pk=scpk)
-        products = subcategory.sc_products.filter(is_active=True)
+        category = get_object_or_404(ProductCategory, pk=kwargs['cpk'])
+        subcategory = get_object_or_404(ProductSubCategory, pk=kwargs['scpk'])
+        products = subcategory.sc_products.filter(Q(is_active=True), Q(price__lte=max_price) & Q(price__gte=min_price))
+        print(products)
 
     products_paginator = Paginator(products, on_page)
+
     try:
-        products = products_paginator.page(page)
+        products = products_paginator.page(kwargs['page'])
     except PageNotAnInteger:
         products = products_paginator.page(1)
     except EmptyPage:
@@ -49,5 +75,8 @@ def category_products(request, cpk, scpk, page=1, l_price=None):
         'range': range,
     }
 
-    return render(request, 'mainapp/category.html', context)
+    if request.is_ajax():
+        result = render_to_string('mainapp/includes/inc__products_list.html', context)
+        return JsonResponse({'result': result})
 
+    return render(request, 'mainapp/category.html', context)

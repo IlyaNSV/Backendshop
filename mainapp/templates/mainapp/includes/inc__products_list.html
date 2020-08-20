@@ -1,0 +1,44 @@
+<div class="row">
+    {% for product in products %}
+        <!-- single product -->
+        <div class="col-lg-4 col-md-6">
+            <div class="single-product">
+                <a href="{#% url 'mainapp:product_detail' product.pk %#}">
+                    {% if product.image %}
+                        <img class="img-fluid" src="{{ product.image.url }}" alt="#">
+                    {% endif %}
+                </a>
+                <div class="product-details">
+                    <h6>{{ product.name }}</h6>
+                    <div class="price">
+                        {% if product.sale_price != 0 %}
+                            <h6>{{ product.sale_price }}</h6>
+                            <h6 class="l-through">{{ product.price }}</h6>
+                        {% else %}
+                            <h6>{{ product.price }}</h6>
+                        {% endif %}
+                    </div>
+                    <div class="prd-bottom">
+                        <a href="" class="social-info">
+                            <span class="ti-bag"></span>
+                            <p class="hover-text">add to bag</p>
+                        </a>
+                        <a href="" class="social-info">
+                            <span class="lnr lnr-heart"></span>
+                            <p class="hover-text">Wishlist</p>
+                        </a>
+                        <a href="" class="social-info">
+                            <span class="lnr lnr-sync"></span>
+                            <p class="hover-text">compare</p>
+                        </a>
+                        <a href="{#% url 'mainapp:product_detail' product.pk %#}"
+                           class="social-info">
+                            <span class="lnr lnr-move"></span>
+                            <p class="hover-text">view more</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

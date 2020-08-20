@@ -3,7 +3,7 @@ import mainapp.views as mainapp
 
 app_name = 'mainapp'
 
-urlpatterns =[
+urlpatterns = [
     path('', mainapp.IndexView.as_view(), name='index'),
 
     path('contact/', mainapp.ContactView.as_view(), name='contact'),
@@ -13,6 +13,23 @@ urlpatterns =[
 
     re_path(r'^category/(?P<cpk>\d+)/subcategory/(?P<scpk>\d+)/products/(?P<page>\d+)/$',
             mainapp.category_products, name='category_products_pagination'),
-    # path('', mainapp.price_filter),
-    # path('higher/<int:h_price>/', mainapp.price_filter),
+
+    # PRODUCTS FILTERS PATHS
+    re_path(r'^category/(?P<cpk>\d+)/subcategory/(?P<scpk>\d+)/products/filter/price/lower/(?P<l_price>\d+)/$',
+            mainapp.category_products),
+
+    re_path(r'^category/(?P<cpk>\d+)/subcategory/(?P<scpk>\d+)/products/filter/price/upper/(?P<u_price>\d+)/$',
+            mainapp.category_products),
+
+    re_path(
+        r'^category/(?P<cpk>\d+)/subcategory/(?P<scpk>\d+)/products/(?P<page>\d+)/'
+        r'filter/price/lower/(?P<l_price>\d+)/$',
+        mainapp.category_products),
+
+    re_path(
+        r'^category/(?P<cpk>\d+)/subcategory/(?P<scpk>\d+)/products/(?P<page>\d+)/'
+        r'filter/price/upper/(?P<u_price>\d+)/$',
+        mainapp.category_products),
+
+    # path('', mainapp.price_higher_filter),
 ]

@@ -1,4 +1,7 @@
 from django.db import models
+from django.db.models import Max, Min
+from simplejson import Decimal, dumps
+from django.shortcuts import get_object_or_404
 
 
 class ProductCategory(models.Model):
@@ -32,7 +35,7 @@ class ProductBrand(models.Model):
     image = models.ImageField(verbose_name='логотип', upload_to='brands_logo', blank=True)
 
     @property
-    def brand_products_count(self, cpk=None, scpk=None): #cpk = category_pk, scpk = subcategory_pk
+    def brand_products_count(self, cpk=None, scpk=None):  # cpk = category_pk, scpk = subcategory_pk
         if scpk:
             return ProductCategory.objects.filter(pk=cpk).subs.filter(pk=scpk).sc_products.filter(brand=self.pk).count()
         else:
@@ -65,11 +68,11 @@ class Product(models.Model):
                               choices=GENDER_CHOICES, default=MALE)
 
 
-class Banner(models.Model):
-    name = models.CharField('имя баннера', max_length=128)
-    image = models.ImageField(upload_to='banners_images', blank=True)
-    desc = models.TextField('описание баннера', blank=True)
-    info = models.TextField('служебное описание баннера', blank=True
-    created = models.DateField(verbose_name='Создан', auto_now_add=True)
-    updated = models.DateField(verbose_name='Обновлён', auto_now=True)
-    is_active = models.BooleanField(default=False)
+# class Banner(models.Model):
+#     name = models.CharField('имя баннера', max_length=128)
+#     image = models.ImageField(upload_to='banners_images', blank=True)
+#     desc = models.TextField('описание баннера', blank=True)
+#     info = models.TextField('служебное описание баннера', blank=True)
+#     created = models.DateField(verbose_name='Создан', auto_now_add=True)
+#     updated = models.DateField(verbose_name='Обновлён', auto_now=True)
+#     is_active = models.BooleanField(default=False)

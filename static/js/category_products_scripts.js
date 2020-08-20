@@ -5,10 +5,21 @@ window.onload = function () {
         let lowerprice = parseInt($(event.target).attr('aria-valuetext'), 10);
         console.log(lowerprice)
         $.ajax({
-            url: 'filter/l_price/'+ lowerprice + '/',
+            url: 'filter/price/lower/' + lowerprice + '/',
             success: function (data) {
                 console.log(data)
-                $('.basket_list').html(data.result);
+                $('.lattest-product-area.pb-40.category-list').html(data.result);
+            }
+        });
+    });
+    $('.noUi-handle.noUi-handle-upper').on('mouseup', null,function (event) {
+        let upperprice = parseInt($(event.target).attr('aria-valuetext'), 10);
+        console.log(upperprice)
+        $.ajax({
+            url: 'filter/price/upper/' + upperprice + '/',
+            success: function (data) {
+                console.log(data)
+                $('.lattest-product-area.pb-40.category-list').html(data.result);
             }
         });
     })
