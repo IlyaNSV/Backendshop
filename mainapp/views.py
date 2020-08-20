@@ -32,8 +32,10 @@ def category_products(request, **kwargs):
         print('AJAX')
         if 'l_price' in kwargs:
             request.session['min_price'] = kwargs['l_price']
-        else:
+        elif 'u_price' in kwargs:
             request.session['max_price'] = kwargs['u_price']
+        elif 'b_name' in kwargs:
+            request.session['brand'] = kwargs['b_name']
 
     min_price = request.session['min_price']
     max_price = request.session['max_price']
@@ -41,19 +43,29 @@ def category_products(request, **kwargs):
     category_list = ProductCategory.objects.all()
     brands_list = ProductBrand.objects.all()
 
-    on_page = 4
+    on_page = 12
     range = [1, 2, 3]
 
     if kwargs['cpk'] == '0':
         category = {'pk': 0, 'name': 'All categories'}
         subcategory = {'pk': 0, 'name': 'All subcategories'}
-        products = Product.objects.filter(Q(is_active=True), Q(price__lte=max_price) & Q(price__gte=min_price))
+        products = Product.objects.filter(
+            Q(is_active=True),
+            Q(price__lte=max_price)
+            & Q(price__gte=min_price))
+        if ('brand' in request.session) & (request.session['brand'] != 'All'):
+            products = products.filter(brand__name=request.session['brand'])
         print(products)
 
     else:
         category = get_object_or_404(ProductCategory, pk=kwargs['cpk'])
         subcategory = get_object_or_404(ProductSubCategory, pk=kwargs['scpk'])
-        products = subcategory.sc_products.filter(Q(is_active=True), Q(price__lte=max_price) & Q(price__gte=min_price))
+        products = subcategory.sc_products.filter(
+            Q(is_active=True),
+            Q(price__lte=max_price)
+            & Q(price__gte=min_price))
+        if request.is_ajax() & ('b_name' in kwargs):
+            products = products.filter(brand__name=kwargs['b_name'])
         print(products)
 
     products_paginator = Paginator(products, on_page)

@@ -64,6 +64,11 @@
                         <div class="head">Brands</div>
                         <form action="#">
                             <ul>
+                                <li class="filter-list"><input class="pixel-radio" type="radio"
+                                                               id="All"
+                                                               name="brand"><label
+                                        for="All">All</label>
+                                </li>
                                 {% for brand in brands_list %}
                                     <li class="filter-list"><input class="pixel-radio" type="radio"
                                                                    id="{{ brand.name }}"
@@ -143,9 +148,9 @@
                             <a href="#" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
                         {% endif %}
                         {% if products.paginator.num_pages > 3 %}
-                        <a href="{% url 'main:category_products_pagination' category.pk subcategory.pk products.paginator.num_pages %}"
-                                {% if products.number == products.paginator.num_pages %}
-                           class="active"{% endif %}>{{ products.paginator.num_pages }}</a>
+                            <a href="{% url 'main:category_products_pagination' category.pk subcategory.pk products.paginator.num_pages %}"
+                                    {% if products.number == products.paginator.num_pages %}
+                               class="active"{% endif %}>{{ products.paginator.num_pages }}</a>
                         {% endif %}
                         {% if products.has_next %}
                             <a href="{% url 'main:category_products_pagination' category.pk subcategory.pk products.next_page_number %}"
@@ -181,9 +186,9 @@
                             <a href="#" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
                         {% endif %}
                         {% if products.paginator.num_pages > 3 %}
-                        <a href="{% url 'main:category_products_pagination' category.pk subcategory.pk products.paginator.num_pages %}"
-                                {% if products.number == products.paginator.num_pages %}
-                           class="active"{% endif %}>{{ products.paginator.num_pages }}</a>
+                            <a href="{% url 'main:category_products_pagination' category.pk subcategory.pk products.paginator.num_pages %}"
+                                    {% if products.number == products.paginator.num_pages %}
+                               class="active"{% endif %}>{{ products.paginator.num_pages }}</a>
                         {% endif %}
                         {% if products.has_next %}
                             <a href="{% url 'main:category_products_pagination' category.pk subcategory.pk products.next_page_number %}"

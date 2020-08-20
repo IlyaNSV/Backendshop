@@ -22,5 +22,16 @@ window.onload = function () {
                 $('.lattest-product-area.pb-40.category-list').html(data.result);
             }
         });
+    });
+    $('.filter-list').on('click', 'input[type=radio]',function (event) {
+        let brand = $(event.target).attr('id');
+        console.log(brand)
+        $.ajax({
+            url: 'filter/brand/' + brand + '/',
+            success: function (data) {
+                console.log(data)
+                $('.lattest-product-area.pb-40.category-list').html(data.result);
+            }
+        });
     })
 };

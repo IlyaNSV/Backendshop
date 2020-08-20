@@ -31,5 +31,12 @@ urlpatterns = [
         r'filter/price/upper/(?P<u_price>\d+)/$',
         mainapp.category_products),
 
+    re_path(r'^category/(?P<cpk>\d+)/subcategory/(?P<scpk>\d+)/products/filter/brand/(?P<b_name>.+\w+)/$',
+            mainapp.category_products),
+
+    re_path(
+        r'^category/(?P<cpk>\d+)/subcategory/(?P<scpk>\d+)/products/(?P<page>\d+)/'
+        r'filter/brand/(?P<b_name>.+\w+)/$',
+        mainapp.category_products),
     # path('', mainapp.price_higher_filter),
 ]
